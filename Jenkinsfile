@@ -13,16 +13,8 @@ pipeline {
         }
         stage('Build') {
             steps {
-               bat 'mvn install'
+               bat 'mvn compile'
             }
         }
      }
-    post {
-       always {
-          junit(
-        allowEmptyResults: true,
-        testResults: '*/test-reports/.xml'
-      )
-      }
-   } 
 }
