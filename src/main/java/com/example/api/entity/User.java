@@ -1,7 +1,7 @@
 package com.example.api.entity;
 
 
-import com.example.api.annotations.LoginConstraint;
+import com.example.api.annotations.UserConstraint;
 
 import javax.persistence.*;
 
@@ -13,7 +13,6 @@ public class User {
     @Column(name = "id", updatable = false, nullable = false, unique=true)
     private long id;
 
-    @LoginConstraint
     @Column(name = "login", nullable = false, unique = true)
     private String login;
 
@@ -110,6 +109,6 @@ public class User {
         Admin, User, Guest
     }
     public enum UserStatus {
-        Blocked, Unblocked;
+        Blocked, Unblocked
     }
 }

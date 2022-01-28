@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/color-management/")
-public class ColorRestController {
+public class ColorController {
     @Autowired
     private ColorService colorService;
 

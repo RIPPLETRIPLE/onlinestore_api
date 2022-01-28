@@ -1,6 +1,5 @@
 package com.example.api.security;
 
-import com.example.api.filter.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    private AuthenticationEntryPoint entryPoint;
 
     @Bean
     AuthenticationProvider authenticationProvider() {
@@ -45,13 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/authentication").permitAll()
-                    .antMatchers(HttpMethod.POST).hasAuthority("ADMIN")
-                    .antMatchers(HttpMethod.PUT).hasAuthority("ADMIN")
-                    .antMatchers(HttpMethod.DELETE).hasAuthority("ADMIN")
+                    .antMatchers("/registration").permitAll()
+                    .antMatchers(HttpMethod.POST, "/size-management/size", "/color-management/color", "/category-management/category").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/size-management/size", "/color-management/color", "/category-management/category").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/size-management/size", "/color-management/color", "/category-management/category").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
+                .and().httpBasic()
+                .authenticationEntryPoint(entryPoint)
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
